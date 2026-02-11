@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#667eea">
+    <title>the Albeshti Kitchen</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Item Detail View -->
+        <div id="itemDetailView" style="display: none;">
+            <header>
+                <button id="backBtn" class="back-btn">← Back</button>
+                <h1 id="detailItemName" style="margin: 0;">Item Name</h1>
+            </header>
+            <div class="item-detail-content">
+                <img id="detailItemImage" src="" alt="" class="item-detail-image">
+                <div class="item-detail-info">
+                    <div class="item-detail-category" id="detailItemCategory"></div>
+                    <div class="item-detail-location" id="detailItemLocation"></div>
+                    <div class="item-detail-quantity" id="detailItemQuantity"></div>
+                    <div class="item-detail-description" id="detailItemDescription"></div>
+                    <div class="item-detail-comments">
+                        <h3 class="comments-heading">Comments</h3>
+                        <div id="comments-list"></div>
+                        <form id="comment-form" class="comment-form">
+                            <textarea id="comment-text" class="comment-input" rows="2" placeholder="Add a comment..." maxlength="500"></textarea>
+                            <button type="submit" class="comment-submit">Post comment</button>
+                        </form>
+                        <p id="comments-login-hint" class="comments-hint">Sign in as Guest to comment (one-time, no account needed).</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main List View -->
+        <div id="mainListView">
+        <header>
+            <h1>the Albeshti Kitchen</h1>
+            <p class="subtitle">Search through all your kitchen items</p>
+        </header>
+
+        <div class="search-container">
+            <input 
+                type="search" 
+                id="searchInput" 
+                placeholder="Search items..."
+                autocomplete="off"
+                inputmode="search"
+            >
+            <div class="search-icon">🔍</div>
+        </div>
+
+        <div class="category-filter-container">
+            <div id="categoryFilter" class="category-filter">
+                <!-- Category buttons will be dynamically inserted here -->
+            </div>
+        </div>
+
+        <div class="stats">
+            <span id="itemCount">0 items</span>
+            <span id="filteredCount" class="filtered-count"></span>
+        </div>
+
+        <div id="itemsGrid" class="items-grid">
+            <!-- Items will be dynamically inserted here -->
+        </div>
+
+        <div id="noResults" class="no-results" style="display: none;">
+            <p>No items found matching your search.</p>
+        </div>
+        </div>
+    </div>
+
+    <!-- Edit Item Modal -->
+    <div id="editModal" class="edit-modal" style="display: none;">
+        <div class="edit-modal-backdrop" id="editModalBackdrop"></div>
+        <div class="edit-modal-content">
+            <div class="edit-modal-header">
+                <h2>Edit Item</h2>
+                <button class="edit-modal-close" id="editModalClose" aria-label="Close">×</button>
+            </div>
+            <form id="editForm" class="edit-form">
+                <input type="hidden" id="editItemIndex" value="">
+                
+                <div class="form-group">
+                    <label for="editName">Name</label>
+                    <input type="text" id="editName" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editCategory">Category</label>
+                    <input type="text" id="editCategory" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editLocation">Location</label>
+                    <input type="text" id="editLocation" placeholder="e.g. bin bag, cupboard">
+                </div>
+                
+                <div class="form-group">
+                    <label for="editQuantity">Quantity</label>
+                    <input type="number" id="editQuantity" min="1" value="1" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editDescription">Description</label>
+                    <textarea id="editDescription" rows="3" placeholder="Enter item description"></textarea>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn-cancel" id="editCancelBtn">Cancel</button>
+                    <button type="submit" class="btn-save">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

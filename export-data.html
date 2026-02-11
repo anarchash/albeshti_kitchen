@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Export Kitchen Data</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f7fa;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        textarea {
+            width: 100%;
+            min-height: 400px;
+            padding: 15px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            margin-bottom: 20px;
+        }
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            opacity: 0.9;
+        }
+        .info {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            color: #1976d2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📦 Export Kitchen Items Data</h1>
+        <div class="info">
+            This will export all your kitchen items from localStorage. Copy the JSON below and provide it to update the default data.
+        </div>
+        <textarea id="exportData" readonly></textarea>
+        <button onclick="exportData()">Export Data</button>
+        <button onclick="copyToClipboard()">Copy to Clipboard</button>
+    </div>
+
+    <script>
+        function exportData() {
+            const data = localStorage.getItem('kitchenItems');
+            const textarea = document.getElementById('exportData');
+            
+            if (data) {
+                try {
+                    const parsed = JSON.parse(data);
+                    const formatted = JSON.stringify(parsed, null, 4);
+                    textarea.value = formatted;
+                } catch (e) {
+                    textarea.value = 'Error parsing data: ' + e.message;
+                }
+            } else {
+                textarea.value = 'No data found in localStorage. Make sure you have edited items on the main page.';
+            }
+        }
+
+        function copyToClipboard() {
+            const textarea = document.getElementById('exportData');
+            textarea.select();
+            document.execCommand('copy');
+            alert('Copied to clipboard!');
+        }
+
+        // Auto-export on load
+        window.onload = exportData;
+    </script>
+</body>
+</html>

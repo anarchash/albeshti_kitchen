@@ -1,0 +1,17 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // item-comments/{itemSlug}: one doc per item
+    // comments subcollection: one doc per comment
+    match /item-comments/{itemSlug} {
+      allow read: if true;
+      allow create, update: if request.auth != null;
+      allow delete: if false;
+      match /comments/{commentId} {
+        allow read: if true;
+        allow create: if request.auth != null && request.resource.data.text is string && request.resource.data.text.size() <= 500;
+        allow update, delete: if false;
+      }
+    }
+  }
+}
