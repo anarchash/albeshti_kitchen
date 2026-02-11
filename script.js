@@ -121,8 +121,6 @@ function showMainList() {
         });
     }
     
-    // Edit modal handlers
-    setupEditModal();
 }
 
 function showItemDetail(itemName) {
@@ -343,36 +341,17 @@ function renderItems(items) {
     noResults.style.display = 'none';
     grid.innerHTML = items.map((item) => createItemCard(item)).join('');
     
-    // Add click and edit button event listeners
+    // Add click to navigate to detail page
     items.forEach((item) => {
-        // Find the card by matching the item
         const cards = grid.children;
         for (let i = 0; i < cards.length; i++) {
             const card = cards[i];
             const nameEl = card.querySelector('.item-name');
             if (nameEl && nameEl.textContent.includes(item.name)) {
-                // Make card clickable to navigate to detail page
                 card.style.cursor = 'pointer';
-                card.addEventListener('click', (e) => {
-                    // Don't navigate if clicking the edit button
-                    if (!e.target.closest('.item-edit-btn')) {
-                        window.location.href = `index.html?item=${encodeURIComponent(item.name)}`;
-                    }
+                card.addEventListener('click', () => {
+                    window.location.href = `index.html?item=${encodeURIComponent(item.name)}`;
                 });
-                
-                // Edit button
-                const editBtn = card.querySelector('.item-edit-btn');
-                if (editBtn) {
-                    editBtn.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        // Find the index in allItems
-                        const itemIndex = allItems.findIndex(ai => ai === item || 
-                            (ai.image === item.image && ai.name === item.name));
-                        if (itemIndex !== -1) {
-                            openEditModal(item, itemIndex);
-                        }
-                    });
-                }
                 break;
             }
         }
@@ -390,7 +369,6 @@ function createItemCard(item) {
     
     return `
         <div class="item-card">
-            <button class="item-edit-btn" aria-label="Edit item">✏️</button>
             <div class="item-image">
                 <img src="${imageSrc}" alt="${imageAlt}" loading="lazy" 
                      onerror="this.onerror=null; this.parentElement.innerHTML='📦';">
@@ -404,92 +382,6 @@ function createItemCard(item) {
         </div>
     `;
 }
-
-function openEditModal(item, index) {
-    const modal = document.getElementById('editModal');
-    const form = document.getElementById('editForm');
-    
-    document.getElementById('editItemIndex').value = index;
-    document.getElementById('editName').value = item.name;
-    document.getElementById('editCategory').value = item.category;
-    document.getElementById('editLocation').value = item.location || '';
-    document.getElementById('editQuantity').value = item.quantity || 1;
-    document.getElementById('editDescription').value = item.description || '';
-    
-    modal.style.display = 'block';
-    document.body.style.overflow = 'hidden';
-    document.getElementById('editName').focus();
-}
-
-function closeEditModal() {
-    const modal = document.getElementById('editModal');
-    modal.style.display = 'none';
-    document.body.style.overflow = '';
-    document.getElementById('editForm').reset();
-}
-
-function setupEditModal() {
-    const modal = document.getElementById('editModal');
-    const backdrop = document.getElementById('editModalBackdrop');
-    const closeBtn = document.getElementById('editModalClose');
-    const cancelBtn = document.getElementById('editCancelBtn');
-    const form = document.getElementById('editForm');
-    
-    backdrop.addEventListener('click', closeEditModal);
-    closeBtn.addEventListener('click', closeEditModal);
-    cancelBtn.addEventListener('click', closeEditModal);
-    
-    form.addEventListener('submit', (e) => {
-        e.preventDefault();
-        saveEditedItem();
-    });
-    
-    // Close on Escape key
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && modal.style.display === 'block') {
-            closeEditModal();
-        }
-    });
-}
-
-function saveEditedItem() {
-    const index = parseInt(document.getElementById('editItemIndex').value);
-    const name = document.getElementById('editName').value.trim();
-    const category = document.getElementById('editCategory').value.trim();
-    const location = document.getElementById('editLocation').value.trim();
-    const quantity = parseInt(document.getElementById('editQuantity').value) || 1;
-    const description = document.getElementById('editDescription').value.trim();
-    
-    if (!name || !category) {
-        alert('Please fill in name and category');
-        return;
-    }
-    
-    // Update the item
-    const item = allItems[index];
-    item.name = name;
-    item.category = category;
-    item.location = location;
-    item.quantity = quantity;
-    item.description = description;
-    
-    // Save to localStorage
-    saveItems();
-    
-    // Update filtered items if this item is in the current view
-    const filteredIndex = filteredItems.findIndex(fi => fi === item);
-    if (filteredIndex !== -1) {
-        filteredItems[filteredIndex] = item;
-    }
-    
-    // Re-render
-    renderCategoryFilter(); // Refresh category filter in case categories changed
-    renderItems(filteredItems);
-    updateItemCount();
-    
-    closeEditModal();
-}
-
 
 function escapeHtml(text) {
     const div = document.createElement('div');
