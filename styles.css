@@ -246,6 +246,17 @@ header {
     align-items: center;
     justify-content: center;
     gap: 6px;
+    flex-wrap: wrap;
+}
+
+.item-number-badge {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    background: var(--background);
+    padding: 2px 8px;
+    border-radius: 10px;
+    flex-shrink: 0;
 }
 
 .item-quantity {
@@ -308,6 +319,13 @@ header {
 }
 
 /* Item Detail View Styles */
+.item-detail-number {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
 .item-detail-content {
     background: var(--card-background);
     border-radius: 20px;

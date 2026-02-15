@@ -147,6 +147,17 @@ function showItemDetail(itemName) {
     document.getElementById('detailItemImage').src = item.image || '';
     document.getElementById('detailItemImage').alt = item.name;
     
+    const numberEl = document.getElementById('detailItemNumber');
+    if (numberEl) {
+        const num = getItemNumberFromImage(item.image);
+        if (num != null) {
+            numberEl.textContent = 'Item #' + num;
+            numberEl.style.display = 'block';
+        } else {
+            numberEl.style.display = 'none';
+        }
+    }
+    
     const categoryEl = document.getElementById('detailItemCategory');
     categoryEl.textContent = item.category;
     categoryEl.className = 'item-detail-category';
@@ -186,6 +197,13 @@ function showItemDetail(itemName) {
 
 function itemSlug(name) {
     return (name || '').toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+}
+
+// Get item number from image path (e.g. "images/Item-1.jpeg" -> 1, "images/Item-101.jpeg" -> 101)
+function getItemNumberFromImage(imagePath) {
+    if (!imagePath || typeof imagePath !== 'string') return null;
+    const match = imagePath.match(/Item-(\d+)/i);
+    return match ? parseInt(match[1], 10) : null;
 }
 
 function ensureFirebase() {
@@ -366,6 +384,8 @@ function createItemCard(item) {
     const locationValue = item.location || (item.image && item.image.indexOf('images/') === 0 ? 'bin bag' : '');
     const locationDisplay = locationValue ? `<div class="item-location">${escapeHtml(locationValue)}</div>` : '';
     const description = item.description ? `<div class="item-description">${escapeHtml(item.description)}</div>` : '';
+    const num = getItemNumberFromImage(item.image);
+    const itemNumber = num != null ? `<span class="item-number-badge">#${num}</span>` : '';
     
     return `
         <div class="item-card">
@@ -374,7 +394,7 @@ function createItemCard(item) {
                      onerror="this.onerror=null; this.parentElement.innerHTML='📦';">
             </div>
             <div class="item-info">
-                <div class="item-name">${escapeHtml(item.name)}${quantityDisplay}</div>
+                <div class="item-name">${itemNumber}${escapeHtml(item.name)}${quantityDisplay}</div>
                 <div class="item-category">${escapeHtml(item.category)}</div>
                 ${locationDisplay}
                 ${description}
